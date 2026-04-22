@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization Complete - TikTok Content Automation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff0050, #ff4081);
+            color: white; margin: 0; padding: 0; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .container {
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 60px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.2); max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .success-icon {
+            font-size: 4rem; margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+        h1 { font-size: 2.5rem; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        p { font-size: 1.2rem; margin: 20px 0; opacity: 0.9; }
+        .status { 
+            background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; 
+            margin: 30px 0; font-family: monospace; font-size: 0.9rem;
+        }
+        .close-button {
+            background: rgba(255,255,255,0.3); color: white; border: none;
+            padding: 15px 30px; border-radius: 25px; font-size: 1.1rem;
+            cursor: pointer; margin-top: 20px; transition: all 0.3s ease;
+        }
+        .close-button:hover { background: rgba(255,255,255,0.4); transform: translateY(-2px); }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .loading {
+            display: inline-block; width: 20px; height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%; border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✅</div>
+        <h1>Authorization Complete!</h1>
+        <p>TikTok access has been successfully granted to your automation service.</p>
+        
+        <div class="status" id="status">
+            <div class="loading"></div> Processing authorization...
+        </div>
+        
+        <p id="message">Please wait while we complete the setup process.</p>
+        
+        <button class="close-button" onclick="window.close()">Close Window</button>
+        
+        <div style="margin-top: 30px; font-size: 0.9rem; opacity: 0.7;">
+            <p>🔒 Your authorization is secure and encrypted</p>
+            <p>🤖 Content automation is now ready to begin</p>
+        </div>
+    </div>
+
+    <script>
+        // Extract authorization code from URL parameters
+        function processAuthorization() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            const statusDiv = document.getElementById('status');
+            const messageDiv = document.getElementById('message');
+            
+            if (error) {
+                statusDiv.innerHTML = '❌ Authorization failed: ' + error;
+                statusDiv.style.background = 'rgba(255,0,0,0.2)';
+                messageDiv.textContent = 'Please try the authorization process again.';
+                return;
+            }
+            
+            if (code) {
+                // Success - authorization code received
+                statusDiv.innerHTML = '✅ Authorization successful!<br><small>Code: ' + code.substring(0, 10) + '...</small>';
+                statusDiv.style.background = 'rgba(0,255,0,0.2)';
+                messageDiv.innerHTML = 'Great! Your TikTok account is now connected.<br><strong>You can safely close this window.</strong>';
+                
+                // Log for debugging (remove in production)
+                console.log('Authorization Code:', code);
+                if (state) console.log('State:', state);
+                
+                // Auto-close after 3 seconds
+                setTimeout(() => {
+                    window.close();
+                }, 3000);
+                
+            } else {
+                statusDiv.innerHTML = '⚠️ No authorization code received';
+                statusDiv.style.background = 'rgba(255,165,0,0.2)';
+                messageDiv.textContent = 'This may be normal if you accessed this page directly.';
+            }
+        }
+        
+        // Process authorization when page loads
+        window.addEventListener('load', processAuthorization);
+        
+        // Handle case where window.close() is blocked
+        document.querySelector('.close-button').addEventListener('click', function() {
+            if (!window.close()) {
+                alert('Please close this tab manually.');
+            }
+        });
+    </script>
+</body>
+</html>
